@@ -7,14 +7,14 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-color: #050505;
-            --card-bg: #121212;
+            --bg-color: #000000;
+            --card-bg: #0f0f11;
             --primary-wine: #581c87; /* Vino oscuro / Burgundy profundo */
             --wine-hover: #7e22ce;
             --accent-color: #f59e0b; /* Toque antojable para precios */
             --text-color: #e2e8f0;
             --text-muted: #94a3b8;
-            --border-color: #262626;
+            --border-color: #1f1f23;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -33,7 +33,7 @@
         }
 
         header {
-            background-color: #0a0a0a;
+            background-color: #000000;
             border-bottom: 1px solid var(--border-color);
             padding: 20px 40px;
             display: flex;
@@ -50,7 +50,9 @@
         .nav-right { display: flex; align-items: center; gap: 15px; }
         .nav-info { font-size: 14px; background: rgba(88, 28, 135, 0.2); border: 1px solid var(--primary-wine); color: #c084fc; padding: 6px 14px; border-radius: 20px; }
         
+        /* Botón de pedidos oculto por defecto, solo se muestra si el correo coincide */
         .btn-admin {
+            display: none;
             background-color: var(--primary-wine);
             color: white;
             text-decoration: none;
@@ -69,7 +71,7 @@
         }
 
         .hero-banner {
-            background: linear-gradient(135deg, #121212 0%, #1a0b1c 100%);
+            background: linear-gradient(135deg, #0f0f11 100%, #1c0924 0%);
             color: white;
             padding: 45px;
             border-radius: 16px;
@@ -77,7 +79,7 @@
             text-align: center;
             border: 1px solid var(--border-color);
             border-bottom: 3px solid var(--primary-wine);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
         }
         .hero-banner h1 { font-size: 30px; margin-bottom: 10px; letter-spacing: -0.5px; }
         .hero-banner p { color: var(--text-muted); font-size: 15px; }
@@ -107,7 +109,7 @@
         .product-img-container {
             width: 100%;
             height: 200px;
-            background-color: #1a1a1a;
+            background-color: #09090b;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -175,7 +177,8 @@
         <a href="index.html" class="logo">Snack<span>Box</span></a>
         <div class="nav-right">
             <div class="nav-info">🍬 Tienda Activa</div>
-            <a href="pedidos.html" class="btn-admin">📦 Ver Pedidos</a>
+            <!-- Botón de pedidos protegido por validación de correo -->
+            <a href="pedidos.html" class="btn-admin" id="btnAdminSecreto">📦 Panel de Pedidos</a>
         </div>
     </header>
 
@@ -240,7 +243,41 @@
             window.location.href = `producto.html?id=${id}`;
         }
 
-        document.addEventListener('DOMContentLoaded', renderizarCatalogo);
+        // Verificación de correo electrónico secreto (simulación de detección de sesión de navegador/cuenta)
+        function verificarAccesoAdmin() {
+            // Nota: En un navegador estático puro, simulamos leyendo localStorage o permitiendo que ingreses tu correo por única vez si abres el modo dev, 
+            // o bien detectando si guardaste tu sesión previamente. Aquí dejamos el validador automático con tu correo exacto:
+            const correoAutorizado = "gabrieldejesussalcedoyanez@gmail.com";
+            
+            // Verificamos si ya está registrado en localStorage o si se quiere forzar por parámetro/sesión
+            let correoActual = localStorage.getItem('snackbox_user_email');
+
+            // Si no está registrado, puedes agregarlo de forma automática o pedir verificación inicial secreta. 
+            // Para asegurar que SOLO TÚ lo veas sin que otros alumnos puedan adivinarlo, evaluamos si el navegador tiene constancia:
+            if (correoActual === correoAutorizado) {
+                document.getElementById('btnAdminSecreto').style.display = 'block';
+            } else {
+                // Truco ninja: si estás en tu compu, puedes autoverificar presionando una combinación de teclas o dejamos un prompt secreto 
+                // al hacer doble clic en el logo de SnackBox.
+            }
+        }
+
+        // Acceso maestro secreto: Haz doble clic en el logo "SnackBox" para registrar tu correo en este navegador de forma privada
+        document.querySelector('.logo').addEventListener('dblclick', () => {
+            const clave = prompt("Ingresa tu correo electrónico autorizado:");
+            if (clave === "gabrieldejesussalcedoyanez@gmail.com") {
+                localStorage.setItem('snackbox_user_email', clave);
+                document.getElementById('btnAdminSecreto').style.display = 'block';
+                alert("¡Acceso de administrador concedido, cuenta reconocida!");
+            } else {
+                alert("Correo no autorizado.");
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            renderizarCatalogo();
+            verificarAccesoAdmin();
+        });
     </script>
 </body>
 </html>
