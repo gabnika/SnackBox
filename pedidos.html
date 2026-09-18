@@ -7,14 +7,14 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-color: #050505;
-            --card-bg: #121212;
+            --bg-color: #000000;
+            --card-bg: #0f0f11;
             --primary-wine: #581c87;
             --wine-hover: #7e22ce;
             --accent-color: #f59e0b;
             --text-color: #e2e8f0;
             --text-muted: #94a3b8;
-            --border-color: #262626;
+            --border-color: #1f1f23;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -33,7 +33,7 @@
         }
 
         header {
-            background-color: #0a0a0a;
+            background-color: #000000;
             border-bottom: 1px solid var(--border-color);
             padding: 20px 40px;
             display: flex;
@@ -87,14 +87,14 @@
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.6);
             transition: transform 0.2s;
         }
         .pedido-card:hover { transform: translateX(3px); }
 
         .pedido-info h3 { font-size: 16px; color: #ffffff; margin-bottom: 4px; }
         .pedido-cliente { font-size: 15px; font-weight: 700; color: #c084fc; margin-bottom: 6px; }
-        .pedido-nota { font-size: 13px; color: var(--text-muted); background: #18181b; padding: 6px 10px; border-radius: 4px; margin-top: 6px; border: 1px solid var(--border-color); }
+        .pedido-nota { font-size: 13px; color: var(--text-muted); background: #09090b; padding: 6px 10px; border-radius: 4px; margin-top: 6px; border: 1px solid var(--border-color); }
         .pedido-meta { font-size: 12px; color: #71717a; margin-top: 8px; }
 
         .sin-pedidos {
@@ -106,6 +106,19 @@
             color: var(--text-muted);
             font-size: 15px;
         }
+
+        /* Pantalla de bloqueo si no es el correo autorizado */
+        #pantallaBloqueo {
+            display: none;
+            text-align: center;
+            padding: 80px 20px;
+            background: var(--card-bg);
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            margin-top: 40px;
+        }
+        #pantallaBloqueo h2 { color: #fca5a5; margin-bottom: 10px; }
+        #pantallaBloqueo p { color: var(--text-muted); font-size: 14px; }
     </style>
 </head>
 <body>
@@ -115,7 +128,7 @@
         <a href="index.html" class="btn-regresar">← Ir al Catálogo</a>
     </header>
 
-    <div class="container">
+    <div class="container" id="contenidoPanel">
         <div class="panel-header">
             <h1>📦 Panel de Pedidos Entrantes</h1>
             <button class="btn-borrar" onclick="limpiarHistorial()">Borrar Historial</button>
@@ -124,7 +137,28 @@
         <div class="pedidos-grid" id="contenedorPedidos"></div>
     </div>
 
+    <!-- Bloqueo de seguridad -->
+    <div class="container" id="pantallaBloqueo">
+        <h2>🔒 Acceso Restringido</h2>
+        <p>No tienes permisos de administrador para ver este panel. Operación bloqueada por seguridad escolar.</p>
+        <br>
+        <a href="index.html" class="btn-regresar" style="color: #c084fc;">Volver al inicio</a>
+    </div>
+
     <script>
+        function validarSeguridadPanel() {
+            const correoAutorizado = "gabrieldejesussalcedoyanez@gmail.com";
+            const correoRegistrado = localStorage.getItem('snackbox_user_email');
+
+            if (correoRegistrado !== correoAutorizado) {
+                // Ocultar panel y mostrar bloqueo
+                document.getElementById('contenidoPanel').style.display = 'none';
+                document.getElementById('pantallaBloqueo').style.display = 'block';
+            } else {
+                cargarPedidos();
+            }
+        }
+
         function cargarPedidos() {
             const contenedor = document.getElementById('contenedorPedidos');
             const pedidos = JSON.parse(localStorage.getItem('lista_pedidos_snackbox') || '[]');
@@ -157,7 +191,7 @@
             }
         }
 
-        document.addEventListener('DOMContentLoaded', cargarPedidos);
+        document.addEventListener('DOMContentLoaded', validarSeguridadPanel);
     </script>
 </body>
 </html>
