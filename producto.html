@@ -7,34 +7,42 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary-color: #0f172a;
+            --bg-color: #000000;
+            --card-bg: #0f0f11;
+            --primary-wine: #581c87;
+            --wine-hover: #7e22ce;
             --accent-color: #f59e0b;
-            --bg-color: #f8fafc;
-            --card-bg: #ffffff;
-            --text-color: #334155;
-            --border-color: #e2e8f0;
+            --text-color: #e2e8f0;
+            --text-muted: #94a3b8;
+            --border-color: #1f1f23;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
+        
         body {
             font-family: 'Inter', sans-serif;
             background-color: var(--bg-color);
             color: var(--text-color);
             line-height: 1.6;
+            animation: slideUp 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         header {
-            background-color: var(--primary-color);
-            color: white;
+            background-color: #000000;
+            border-bottom: 1px solid var(--border-color);
             padding: 20px 40px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
         }
         .logo { font-size: 22px; font-weight: 700; color: white; text-decoration: none; }
         .logo span { color: var(--accent-color); }
-        .btn-regresar { color: #94a3b8; text-decoration: none; font-size: 14px; font-weight: 500; }
+        .btn-regresar { color: var(--text-muted); text-decoration: none; font-size: 14px; font-weight: 500; transition: color 0.2s; }
         .btn-regresar:hover { color: white; }
 
         .container {
@@ -51,7 +59,7 @@
             border: 1px solid var(--border-color);
             border-radius: 16px;
             padding: 40px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.8);
         }
 
         @media (max-width: 768px) {
@@ -61,28 +69,29 @@
         .detail-img-box {
             width: 100%;
             height: 350px;
-            background-color: #f1f5f9;
+            background-color: #09090b;
             border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
             overflow: hidden;
+            border: 1px solid var(--border-color);
         }
         .detail-img-box img { width: 100%; height: 100%; object-fit: cover; }
-        .placeholder-text { color: #94a3b8; font-weight: 500; }
+        .placeholder-text { color: var(--text-muted); font-weight: 500; }
 
         .detail-info {
             display: flex;
             flex-direction: column;
             gap: 14px;
         }
-        .detail-title { font-size: 24px; font-weight: 700; color: var(--primary-color); }
-        .detail-price { font-size: 22px; font-weight: 700; color: #16a34a; }
-        .detail-desc { font-size: 14px; color: #64748b; }
+        .detail-title { font-size: 24px; font-weight: 700; color: #ffffff; }
+        .detail-price { font-size: 22px; font-weight: 700; color: var(--accent-color); }
+        .detail-desc { font-size: 14px; color: var(--text-muted); }
 
         .form-pedido {
-            margin-top: 15px;
-            background: #f8fafc;
+            margin-top: 10px;
+            background: #09090b;
             border: 1px solid var(--border-color);
             padding: 20px;
             border-radius: 12px;
@@ -90,31 +99,41 @@
             flex-direction: column;
             gap: 12px;
         }
-        .form-pedido label { font-size: 13px; font-weight: 600; color: var(--primary-color); }
-        .form-pedido input, .form-pedido textarea {
+        .form-pedido h3 { color: #ffffff; font-size: 15px; }
+        .form-pedido label { font-size: 13px; font-weight: 600; color: var(--text-muted); }
+        .form-pedido input {
             width: 100%;
-            padding: 10px;
+            padding: 11px;
+            background: #000000;
             border: 1px solid var(--border-color);
             border-radius: 6px;
+            color: white;
             font-family: 'Inter', sans-serif;
             font-size: 14px;
+            transition: border-color 0.2s;
         }
+        .form-pedido input:focus {
+            outline: none;
+            border-color: var(--primary-wine);
+        }
+        
         .btn-enviar-pedido {
-            background-color: var(--accent-color);
-            color: #0f172a;
+            background-color: var(--primary-wine);
+            color: white;
             border: none;
             padding: 12px;
             border-radius: 8px;
             font-weight: 700;
             cursor: pointer;
             text-align: center;
-            transition: background 0.2s;
+            transition: all 0.2s ease;
         }
-        .btn-enviar-pedido:hover { background-color: #d97706; color: white; }
+        .btn-enviar-pedido:hover { background-color: var(--wine-hover); }
         
         .mensaje-exito {
-            background: #dcfce7;
-            color: #166534;
+            background: rgba(16, 185, 129, 0.15);
+            border: 1px solid #10b981;
+            color: #34d399;
             padding: 10px;
             border-radius: 6px;
             font-size: 13px;
@@ -152,8 +171,8 @@
                         <label>Nota o cantidad (Opcional):</label>
                         <input type="text" id="inputNota" placeholder="Ej. Con extra chile, nos vemos en la entrada">
                     </div>
-                    <button class="btn-enviar-pedido" onclick="realizarPedido()">¡Enviar Pedido a Gabriel! 🚀</button>
-                    <div class="mensaje-exito" id="alertaExito">¡Pedido enviado con éxito! Gabriel ya lo recibió en su panel.</div>
+                    <button class="btn-enviar-pedido" onclick="realizarPedido()">¡Enviar Pedido! 🚀</button>
+                    <div class="mensaje-exito" id="alertaExito">¡Pedido registrado con éxito! El sistema lo guardó en el panel.</div>
                 </div>
             </div>
         </div>
@@ -213,12 +232,10 @@
                 fecha: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
             };
 
-            // Guardar en la lista general de pedidos del navegador
             let pedidos = JSON.parse(localStorage.getItem('lista_pedidos_snackbox') || '[]');
-            pedidos.unshift(nuevoPedido); // Pone el más nuevo hasta arriba
+            pedidos.unshift(nuevoPedido);
             localStorage.setItem('lista_pedidos_snackbox', JSON.stringify(pedidos));
 
-            // Mostrar aviso de éxito
             document.getElementById('alertaExito').style.display = 'block';
             document.getElementById('inputNombre').value = '';
             document.getElementById('inputNota').value = '';
