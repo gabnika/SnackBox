@@ -3,38 +3,46 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Panel de Pedidos - Gabriel (Snack Box)</title>
+    <title>Panel de Pedidos - Snack Box</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary-color: #0f172a;
+            --bg-color: #050505;
+            --card-bg: #121212;
+            --primary-wine: #581c87;
+            --wine-hover: #7e22ce;
             --accent-color: #f59e0b;
-            --bg-color: #f8fafc;
-            --card-bg: #ffffff;
-            --text-color: #334155;
-            --border-color: #e2e8f0;
+            --text-color: #e2e8f0;
+            --text-muted: #94a3b8;
+            --border-color: #262626;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
+        
         body {
             font-family: 'Inter', sans-serif;
             background-color: var(--bg-color);
             color: var(--text-color);
             line-height: 1.5;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
 
         header {
-            background-color: var(--primary-color);
-            color: white;
+            background-color: #0a0a0a;
+            border-bottom: 1px solid var(--border-color);
             padding: 20px 40px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
         }
         .logo { font-size: 22px; font-weight: 700; color: white; text-decoration: none; }
         .logo span { color: var(--accent-color); }
-        .btn-regresar { color: #94a3b8; text-decoration: none; font-size: 14px; font-weight: 500; }
+        .btn-regresar { color: var(--text-muted); text-decoration: none; font-size: 14px; font-weight: 500; }
         .btn-regresar:hover { color: white; }
 
         .container {
@@ -49,19 +57,20 @@
             align-items: center;
             margin-bottom: 25px;
         }
-        .panel-header h1 { font-size: 24px; color: var(--primary-color); }
+        .panel-header h1 { font-size: 24px; color: #ffffff; }
         
         .btn-borrar {
-            background-color: #ef4444;
-            color: white;
-            border: none;
+            background-color: #7f1d1d;
+            color: #fca5a5;
+            border: 1px solid #991b1b;
             padding: 8px 14px;
             border-radius: 6px;
             cursor: pointer;
             font-weight: 600;
             font-size: 13px;
+            transition: background 0.2s;
         }
-        .btn-borrar:hover { background-color: #dc2626; }
+        .btn-borrar:hover { background-color: #991b1b; color: white; }
 
         .pedidos-grid {
             display: flex;
@@ -72,27 +81,29 @@
         .pedido-card {
             background: var(--card-bg);
             border: 1px solid var(--border-color);
-            border-left: 5px solid var(--accent-color);
+            border-left: 5px solid var(--primary-wine);
             padding: 20px;
             border-radius: 8px;
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+            transition: transform 0.2s;
         }
+        .pedido-card:hover { transform: translateX(3px); }
 
-        .pedido-info h3 { font-size: 16px; color: var(--primary-color); margin-bottom: 4px; }
-        .pedido-cliente { font-size: 15px; font-weight: 700; color: #2563eb; margin-bottom: 6px; }
-        .pedido-nota { font-size: 13px; color: #64748b; background: #f1f5f9; padding: 6px 10px; border-radius: 4px; margin-top: 6px; }
-        .pedido-meta { font-size: 12px; color: #94a3b8; margin-top: 8px; }
+        .pedido-info h3 { font-size: 16px; color: #ffffff; margin-bottom: 4px; }
+        .pedido-cliente { font-size: 15px; font-weight: 700; color: #c084fc; margin-bottom: 6px; }
+        .pedido-nota { font-size: 13px; color: var(--text-muted); background: #18181b; padding: 6px 10px; border-radius: 4px; margin-top: 6px; border: 1px solid var(--border-color); }
+        .pedido-meta { font-size: 12px; color: #71717a; margin-top: 8px; }
 
         .sin-pedidos {
             text-align: center;
             padding: 50px;
-            background: white;
+            background: var(--card-bg);
             border-radius: 12px;
             border: 1px solid var(--border-color);
-            color: #94a3b8;
+            color: var(--text-muted);
             font-size: 15px;
         }
     </style>
@@ -110,9 +121,7 @@
             <button class="btn-borrar" onclick="limpiarHistorial()">Borrar Historial</button>
         </div>
 
-        <div class="pedidos-grid" id="contenedorPedidos">
-            <!-- Aquí se cargan dinámicamente -->
-        </div>
+        <div class="pedidos-grid" id="contenedorPedidos"></div>
     </div>
 
     <script>
@@ -121,7 +130,7 @@
             const pedidos = JSON.parse(localStorage.getItem('lista_pedidos_snackbox') || '[]');
 
             if (pedidos.length === 0) {
-                contenedor.innerHTML = `<div class="sin-pedidos">Aún no hay ningún pedido registrado. Cuando tus compas pidan algo, aparecerá aquí automáticamente.</div>`;
+                contenedor.innerHTML = `<div class="sin-pedidos">Aún no hay ningún pedido registrado. Cuando tus compas pidan algo, aparecerá aquí al instante.</div>`;
                 return;
             }
 
@@ -133,7 +142,7 @@
                             <div class="pedido-cliente">👤 Cliente: ${p.cliente}</div>
                             <h3>🍬 Producto: ${p.producto} (${p.precio})</h3>
                             <div class="pedido-nota">💬 Nota: ${p.nota}</div>
-                            <div class="pedido-meta">🕒 Hora del pedido: ${p.fecha}</div>
+                            <div class="pedido-meta">🕒 Hora: ${p.fecha}</div>
                         </div>
                     </div>
                 `;
