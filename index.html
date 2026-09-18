@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Snack Box - Catálogo de Dulces y Antojos</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #0f172a;
+            --accent-color: #f59e0b;
+            --accent-hover: #d97706;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-color: #334155;
+            --border-color: #e2e8f0;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.5;
+        }
+
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .logo { font-size: 22px; font-weight: 700; color: white; text-decoration: none; letter-spacing: -0.5px; }
+        .logo span { color: var(--accent-color); }
+        
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .nav-info { font-size: 14px; background: rgba(255,255,255,0.1); padding: 6px 12px; border-radius: 20px; }
+        
+        .btn-admin {
+            background-color: var(--accent-color);
+            color: #0f172a;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 700;
+            transition: background 0.2s;
+        }
+        .btn-admin:hover { background-color: var(--accent-hover); color: white; }
+
+        .container {
+            max-width: 1300px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .hero-banner {
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 16px;
+            margin-bottom: 40px;
+            text-align: center;
+            border-bottom: 4px solid var(--accent-color);
+        }
+        .hero-banner h1 { font-size: 28px; margin-bottom: 10px; }
+        .hero-banner p { color: #94a3b8; font-size: 15px; }
+
+        .grid-productos {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 24px;
+        }
+
+        .product-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            cursor: pointer;
+        }
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px -5px rgba(0,0,0,0.08);
+        }
+
+        .product-img-container {
+            width: 100%;
+            height: 200px;
+            background-color: #f1f5f9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        .product-img-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+        .product-card:hover .product-img-container img { transform: scale(1.05); }
+        .placeholder-text { color: #94a3b8; font-size: 13px; font-weight: 500; }
+
+        .product-info {
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            flex-grow: 1;
+        }
+        .product-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--primary-color);
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        .product-price {
+            font-size: 18px;
+            font-weight: 700;
+            color: #16a34a;
+        }
+        .product-desc {
+            font-size: 13px;
+            color: #64748b;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            margin-bottom: auto;
+        }
+        .btn-ver {
+            margin-top: 10px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none;
+            transition: background 0.2s;
+        }
+        .btn-ver:hover { background-color: var(--accent-hover); color: #0f172a; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <a href="index.html" class="logo">Snack<span>Box</span></a>
+        <div class="nav-right">
+            <div class="nav-info">🍬 Dulces & Antojos</div>
+            <a href="pedidos.html" class="btn-admin">📦 Ver Pedidos (Tú)</a>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="hero-banner">
+            <h1>Catálogo de Antojos y Dulces</h1>
+            <p>Elige tu snack, pon tu nombre y haz tu encargo directo para el receso.</p>
+        </div>
+
+        <div class="grid-productos" id="catalogoIndex"></div>
+    </div>
+
+    <script>
+        const listaProductos = [
+            { id: 1, nombre: "Vasito Loco con Gomitas y Chamoy", precio: "$25", desc: "Mezcla de gomitas surtidas bañadas en chamoy, miguelito y tarugo.", imagen: "" },
+            { id: 2, nombre: "Bolsita de Skittles Aciditos", precio: "$20", desc: "La porción perfecta para el antojo con un toque extra de chile en polvo.", imagen: "" },
+            { id: 3, nombre: "Skwinkles Relleno de Tamarindo", precio: "$18", desc: "Tira de caramelo suave con relleno ácido y tarugo incluido.", imagen: "" },
+            { id: 4, nombre: "Takis Fuego con Limón Extra", precio: "$22", desc: "La clásica botana picosita en presentación individual.", imagen: "" },
+            { id: 5, nombre: "Paleta Vero Tarugo con Miguelito", precio: "$12", desc: "Caramelo macizo de tamarindo cubierto de chilito en polvo.", imagen: "" },
+            { id: 6, nombre: "Duvalín Bicolor (Fresa y Avellana)", precio: "$10", desc: "El dulce clásico para combinar o comer con cucharita.", imagen: "" },
+            { id: 7, nombre: "Bubulubu Relleno de Malvavisco", precio: "$12", desc: "Barrita cubierta de chocolate con centro de jalea de fresa.", imagen: "" },
+            { id: 8, nombre: "Pica Fresas (Bolsa con 10 pzas)", precio: "$15", desc: "Gomitas sabor fresa con capa crujiente y chilito picoso.", imagen: "" },
+            { id: 9, nombre: "Lucas Muecas Sabor Sandía", precio: "$15", desc: "Paleta de caramelo con polvo acidito para untar.", imagen: "" },
+            { id: 10, nombre: "Cacahuates Japoneses Nishikawa", precio: "$18", desc: "Cacahuates crujientes con capa dorada y salada.", imagen: "" },
+            { id: 11, nombre: "Banderilla de Tamarindo con Chile", precio: "$15", desc: "Tamarindo natural picosito en palito con toque de sal y limón.", imagen: "" },
+            { id: 12, nombre: "Chicles Clorets o Trident Menta", precio: "$14", desc: "Gomas de mascar para después del recreo.", imagen: "" },
+            { id: 13, nombre: "Gomitas Panditas Ricolino", precio: "$18", desc: "Bolsita clásica de ositos de gomita de diferentes sabores.", imagen: "" },
+            { id: 14, nombre: "Boing de Mango o Guayaba 500ml", precio: "$15", desc: "Bebida fría para acompañar tus snacks favoritos.", imagen: "" },
+            { id: 15, nombre: "Paleta Kranky con Chocolate", precio: "$14", desc: "Paleta de caramelo crujiente cubierta de chocolate con cereal.", imagen: "" },
+            { id: 16, nombre: "Mazapán de la Rosa Gigante", precio: "$12", desc: "Dulce tradicional de cacahuate que se deshace delicioso en la boca.", imagen: "" },
+            { id: 17, nombre: "Pelón Pelo Rico Clásico", precio: "$16", desc: "Dulce de tamarindo líquido para exprimir y disfrutar.", imagen: "" },
+            { id: 18, nombre: "Papas Ruffles Queso Individual", precio: "$20", desc: "Papas crujientes con sabor intenso a queso.", imagen: "" },
+            { id: 19, nombre: "Bolsa Sorpresa 'Snack Box' Mixta", precio: "$45", desc: "Caja especial con 5 dulces sorpresa diferentes y chamoy.", imagen: "" },
+            { id: 20, nombre: "Mega Tarugo Relleno", precio: "$15", desc: "Barra grande de tamarindo con centro acidito.", imagen: "" }
+        ];
+
+        function renderizarCatalogo() {
+            const contenedor = document.getElementById('catalogoIndex');
+            let html = '';
+
+            listaProductos.forEach(p => {
+                const contenidoImagen = p.imagen 
+                    ? `<img src="${p.imagen}" alt="${p.nombre}">` 
+                    : `<span class="placeholder-text">Foto de Snack</span>`;
+
+                html += `
+                    <div class="product-card" onclick="verProducto(${p.id})">
+                        <div class="product-img-container">${contenidoImagen}</div>
+                        <div class="product-info">
+                            <h3 class="product-title">${p.nombre}</h3>
+                            <div class="product-price">${p.precio}</div>
+                            <p class="product-desc">${p.desc}</p>
+                            <a href="producto.html?id=${p.id}" class="btn-ver" onclick="event.stopPropagation()">Ver y Pedir</a>
+                        </div>
+                    </div>
+                `;
+            });
+            contenedor.innerHTML = html;
+        }
+
+        function verProducto(id) {
+            window.location.href = `producto.html?id=${id}`;
+        }
+
+        document.addEventListener('DOMContentLoaded', renderizarCatalogo);
+    </script>
+</body>
+</html>
