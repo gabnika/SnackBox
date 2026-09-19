@@ -3,70 +3,202 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SnackBox - Tienda</title>
+    <title>Snack Box - Catálogo de Dulces y Antojos</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --bg-color: #000000;
+            --card-bg: #0f0f11;
+            --primary-wine: #581c87; /* Vino oscuro / Burgundy profundo */
+            --wine-hover: #7e22ce;
+            --accent-color: #f59e0b; /* Toque antojable para precios */
+            --text-color: #e2e8f0;
+            --text-muted: #94a3b8;
+            --border-color: #1f1f23;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
         body {
-            background-color: #050505;
-            color: #ffffff;
-            font-family: sans-serif;
-            margin: 0;
-            padding: 20px;
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.5;
+            animation: fadeIn 0.4s ease-in-out;
         }
-        .container {
-            max-width: 500px;
-            margin: auto;
-            background: #111111;
-            border: 2px solid #581c87;
-            padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 0 15px rgba(88, 28, 135, 0.4);
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
         }
-        h2 {
-            color: #d8b4fe;
-            text-align: center;
+
+        header {
+            background-color: #000000;
+            border-bottom: 1px solid var(--border-color);
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(10px);
         }
-        input, button {
-            width: 100%;
-            padding: 12px;
-            margin-top: 10px;
-            margin-bottom: 15px;
-            border-radius: 6px;
-            border: 1px solid #581c87;
-            background: #050505;
+        .logo { font-size: 22px; font-weight: 700; color: white; text-decoration: none; letter-spacing: -0.5px; }
+        .logo span { color: var(--accent-color); }
+        
+        .nav-right { display: flex; align-items: center; gap: 15px; }
+        .nav-info { font-size: 14px; background: rgba(88, 28, 135, 0.2); border: 1px solid var(--primary-wine); color: #c084fc; padding: 6px 14px; border-radius: 20px; }
+        
+        /* Botón de pedidos oculto por defecto, solo se muestra si el correo coincide */
+        .btn-admin {
+            display: none;
+            background-color: var(--primary-wine);
             color: white;
-            box-sizing: border-box;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.25s ease;
         }
-        button {
-            background-color: #581c87;
-            font-weight: bold;
+        .btn-admin:hover { background-color: var(--wine-hover); transform: translateY(-1px); }
+
+        .container {
+            max-width: 1300px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .hero-banner {
+            background: linear-gradient(135deg, #0f0f11 100%, #1c0924 0%);
+            color: white;
+            padding: 45px;
+            border-radius: 16px;
+            margin-bottom: 40px;
+            text-align: center;
+            border: 1px solid var(--border-color);
+            border-bottom: 3px solid var(--primary-wine);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+        }
+        .hero-banner h1 { font-size: 30px; margin-bottom: 10px; letter-spacing: -0.5px; }
+        .hero-banner p { color: var(--text-muted); font-size: 15px; }
+
+        .grid-productos {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 24px;
+        }
+
+        .product-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
             cursor: pointer;
+        }
+        .product-card:hover {
+            transform: translateY(-6px);
+            border-color: var(--primary-wine);
+            box-shadow: 0 12px 25px -5px rgba(88, 28, 135, 0.3);
+        }
+
+        .product-img-container {
+            width: 100%;
+            height: 200px;
+            background-color: #09090b;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        .product-img-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.4s ease;
+        }
+        .product-card:hover .product-img-container img { transform: scale(1.06); }
+        .placeholder-text { color: var(--text-muted); font-size: 13px; font-weight: 500; }
+
+        .product-info {
+            padding: 18px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            flex-grow: 1;
+        }
+        .product-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: #ffffff;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        .product-price {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--accent-color);
+        }
+        .product-desc {
+            font-size: 13px;
+            color: var(--text-muted);
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            margin-bottom: auto;
+        }
+        .btn-ver {
+            margin-top: 12px;
+            background-color: var(--primary-wine);
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none;
             transition: background 0.2s;
         }
-        button:hover {
-            background-color: #6b21a8;
-        }
+        .btn-ver:hover { background-color: var(--wine-hover); }
     </style>
 </head>
 <body>
 
+    <header>
+        <a href="index.html" class="logo">Snack<span>Box</span></a>
+        <div class="nav-right">
+            <div class="nav-info">🍬 Tienda Activa</div>
+            <!-- Botón de pedidos protegido por validación de correo -->
+            <a href="pedidos.html" class="btn-admin" id="btnAdminSecreto">📦 Panel de Pedidos</a>
+        </div>
+    </header>
+
     <div class="container">
-        <h2>SnackBox 🛒</h2>
-        <label for="nombreCliente">Tu Nombre:</label>
-        <input type="text" id="nombreCliente" placeholder="Ej. Carlos Pérez">
+        <div class="hero-banner">
+            <h1>Catálogo de Antojos y Dulces</h1>
+            <p>Elige tu snack favorito, pon tu nombre y encarga directo para el receso.</p>
+        </div>
 
-        <label for="detallePedido">¿Qué vas a pedir?:</label>
-        <input type="text" id="detallePedido" placeholder="Ej. 1 Sabritas y un Boing">
-
-        <!-- Botón que manda a llamar la función de Firebase -->
-        <button onclick="realizarPedido()">Hacer Pedido</button>
+        <div class="grid-productos" id="catalogoIndex"></div>
     </div>
 
-    <!-- Script de Firebase y lógica del sistema -->
+    <!-- Script de Firebase e integración de la tienda -->
     <script type="module">
+        // Importar las funciones necesarias de Firebase SDK y Firestore
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
         import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-analytics.js";
         import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
 
+        // Configuración oficial de tu proyecto snackbox-27b4f
         const firebaseConfig = {
             apiKey: "AIzaSyCl3GsqhjPwXXzyoG_IboStDEJNzcM822A",
             authDomain: "snackbox-27b4f.firebaseapp.com",
@@ -77,35 +209,103 @@
             measurementId: "G-ZMTLFPJ8K6"
         };
 
+        // Inicializar Firebase
         const app = initializeApp(firebaseConfig);
         const analytics = getAnalytics(app);
         const db = getFirestore(app);
 
-        // Función global para enviar el pedido desde los inputs de la página
-        window.realizarPedido = async function() {
-            const cliente = document.getElementById("nombreCliente").value.trim();
-            const pedido = document.getElementById("detallePedido").value.trim();
-
-            if (!cliente || !pedido) {
-                alert("Por favor llena todos los campos, bro.");
-                return;
-            }
-
+        // Función global por si requieres mandar pedidos directo desde el catálogo
+        window.enviarPedidoSnack = async function(nombreCliente, detallePedido) {
             try {
                 await addDoc(collection(db, "pedidos_snackbox"), {
-                    cliente: cliente,
-                    pedido: pedido,
+                    cliente: nombreCliente,
+                    pedido: detallePedido,
                     estado: "Pendiente",
                     timestamp: new Date()
                 });
-                alert("¡Pedido enviado con éxito a la nube!");
-                document.getElementById("nombreCliente").value = "";
-                document.getElementById("detallePedido").value = "";
+                console.log("¡Pedido enviado con éxito!");
             } catch (e) {
                 console.error("Error al enviar el pedido: ", e);
-                alert("Hubo un error al enviar el pedido.");
             }
         };
+    </script>
+
+    <script>
+        const listaProductos = [
+            { id: 1, nombre: "Vasito Loco con Gomitas y Chamoy", precio: "$25", desc: "Mezcla de gomitas surtidas bañadas en chamoy, miguelito y tarugo.", imagen: "" },
+            { id: 2, nombre: "Bolsita de Skittles Aciditos", precio: "$20", desc: "La porción perfecta para el antojo con un toque extra de chile en polvo.", imagen: "" },
+            { id: 3, nombre: "Skwinkles Relleno de Tamarindo", precio: "$18", desc: "Tira de caramelo suave con relleno ácido y tarugo incluido.", imagen: "" },
+            { id: 4, nombre: "Takis Fuego con Limón Extra", precio: "$22", desc: "La clásica botana picosita en presentación individual.", imagen: "" },
+            { id: 5, nombre: "Paleta Vero Tarugo con Miguelito", precio: "$12", desc: "Caramelo macizo de tamarindo cubierto de chilito en polvo.", imagen: "" },
+            { id: 6, nombre: "Duvalín Bicolor (Fresa y Avellana)", precio: "$10", desc: "El dulce clásico para combinar o comer con cucharita.", imagen: "" },
+            { id: 7, nombre: "Bubulubu Relleno de Malvavisco", precio: "$12", desc: "Barrita cubierta de chocolate con centro de jalea de fresa.", imagen: "" },
+            { id: 8, nombre: "Pica Fresas (Bolsa con 10 pzas)", precio: "$15", desc: "Gomitas sabor fresa con capa crujiente y chilito picoso.", imagen: "" },
+            { id: 9, nombre: "Lucas Muecas Sabor Sandía", precio: "$15", desc: "Paleta de caramelo con polvo acidito para untar.", imagen: "" },
+            { id: 10, nombre: "Cacahuates Japoneses Nishikawa", precio: "$18", desc: "Cacahuates crujientes con capa dorada y salada.", imagen: "" },
+            { id: 11, nombre: "Banderilla de Tamarindo con Chile", precio: "$15", desc: "Tamarindo natural picosito en palito con toque de sal y limón.", imagen: "" },
+            { id: 12, nombre: "Chicles Clorets o Trident Menta", precio: "$14", desc: "Gomas de mascar para después del recreo.", imagen: "" },
+            { id: 13, nombre: "Gomitas Panditas Ricolino", precio: "$18", desc: "Bolsita clásica de ositos de gomita de diferentes sabores.", imagen: "" },
+            { id: 14, nombre: "Boing de Mango o Guayaba 500ml", precio: "$15", desc: "Bebida fría para acompañar tus snacks favoritos.", imagen: "" },
+            { id: 15, nombre: "Paleta Kranky con Chocolate", precio: "$14", desc: "Paleta de caramelo crujiente cubierta de chocolate con cereal.", imagen: "" },
+            { id: 16, nombre: "Mazapán de la Rosa Gigante", precio: "$12", desc: "Dulce tradicional de cacahuate que se deshace delicioso en la boca.", imagen: "" },
+            { id: 17, nombre: "Pelón Pelo Rico Clásico", precio: "$16", desc: "Dulce de tamarindo líquido para exprimir y disfrutar.", imagen: "" },
+            { id: 18, nombre: "Papas Ruffles Queso Individual", precio: "$20", desc: "Papas crujientes con sabor intenso a queso.", imagen: "" },
+            { id: 19, nombre: "Bolsa Sorpresa 'Snack Box' Mixta", precio: "$45", desc: "Caja especial con 5 dulces sorpresa diferentes y chamoy.", imagen: "" },
+            { id: 20, nombre: "Mega Tarugo Relleno", precio: "$15", desc: "Barra grande de tamarindo con centro acidito.", imagen: "" }
+        ];
+
+        function renderizarCatalogo() {
+            const contenedor = document.getElementById('catalogoIndex');
+            let html = '';
+
+            listaProductos.forEach(p => {
+                const contenidoImagen = p.imagen 
+                    ? `<img src="${p.imagen}" alt="${p.nombre}">` 
+                    : `<span class="placeholder-text">Foto de Snack</span>`;
+
+                html += `
+                    <div class="product-card" onclick="verProducto(${p.id})">
+                        <div class="product-img-container">${contenidoImagen}</div>
+                        <div class="product-info">
+                            <h3 class="product-title">${p.nombre}</h3>
+                            <div class="product-price">${p.precio}</div>
+                            <p class="product-desc">${p.desc}</p>
+                            <a href="producto.html?id=${p.id}" class="btn-ver" onclick="event.stopPropagation()">Ver y Pedir</a>
+                        </div>
+                    </div>
+                `;
+            });
+            contenedor.innerHTML = html;
+        }
+
+        function verProducto(id) {
+            window.location.href = `producto.html?id=${id}`;
+        }
+
+        function verificarAccesoAdmin() {
+            const correoAutorizado = "gabrieldejesussalcedoyanez@gmail.com";
+            let correoActual = localStorage.getItem('snackbox_user_email');
+            
+            if (correoActual === correoAutorizado) {
+                document.getElementById('btnAdminSecreto').style.display = 'block';
+            }
+        }
+
+        document.querySelector('.logo').addEventListener('dblclick', () => {
+            const clave = prompt("Ingresa tu correo electrónico autorizado:");
+            if (clave === "gabrieldejesussalcedoyanez@gmail.com") {
+                localStorage.setItem('snackbox_user_email', clave);
+                document.getElementById('btnAdminSecreto').style.display = 'block';
+                alert("¡Acceso de administrador concedido, cuenta reconocida!");
+            } else {
+                alert("Correo no autorizado.");
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            renderizarCatalogo();
+            verificarAccesoAdmin();
+        });
     </script>
 </body>
 </html>
